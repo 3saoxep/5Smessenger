@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/Relative_webview"
+    tools:context="com.example.a5smessenger.Views.Activity.Webviews_Messager">
+
+            <WebView
+                android:id="@+id/webview_mess"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+</RelativeLayout>
