@@ -31,7 +31,9 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -50,6 +52,7 @@ import com.example.a5smessenger.Manager.Model.global;
 public class Webviews_Messager extends Activity {
 
     String urlCurrent;
+    private int MY_REQUEST_CODE = 101;
     RelativeLayout relativeLayout;
     String urlMess = "";
     WebView webViewMess;
@@ -69,6 +72,8 @@ public class Webviews_Messager extends Activity {
         addControl();
         loadWebViewMess();
     }
+
+
 
     private void addControl() {
         relativeLayout = findViewById(R.id.Relative_webview);
@@ -342,13 +347,25 @@ public class Webviews_Messager extends Activity {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == FCR) {
             if (mUMA == null) return;
             mUMA.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data));
             mUMA = null;
         }
+
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == MY_REQUEST_CODE){
+                Log.d("verison" , "load Webview");
+                // If the update is cancelled or fails,
+                // you can request to start the update again.
+
+        }
+    }
 
     @Override
     protected void onResume() {

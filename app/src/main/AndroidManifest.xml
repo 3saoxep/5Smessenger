@@ -23,11 +23,13 @@
         <activity android:name=".Views.Activity.Webviews_Messager"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".Views.Activity.AppUpdate" />
         <service android:name=".Manager.Service.FCM_Mess">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
 
         <service android:name=".Manager.Service.FCM_Token">
             <intent-filter>

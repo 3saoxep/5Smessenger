@@ -3,13 +3,14 @@ package com.example.a5smessenger.Views.Activity;
 import android.app.Activity;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -21,11 +22,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.example.a5smessenger.Manager.Database.DatabaseHelper;
 import com.example.a5smessenger.Manager.Model.CParam;
 import com.example.a5smessenger.Manager.Model.global;
 import com.example.a5smessenger.Manager.Webservice.Webservice;
 import com.example.a5smessenger.R;
+
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -38,6 +44,7 @@ import javax.net.ssl.SSLSession;
 public class MainActivity extends Activity {
     Button btnOK;
     TextView txtVersion;
+    private int MY_REQUEST_CODE = 101;
     EditText edtURL;
     boolean connection;
     int StatusCheck;
@@ -59,8 +66,12 @@ public class MainActivity extends Activity {
         //khởi tạo database                             //Khởi tạo hàm asys next page
                                                         //nextPage=new NextMessengerPage();
         global.setAppContext(getApplicationContext());// lấy vị trí Activity dùng cho APP
+
+        // get Version name
+        new GetLastVersion().execute();
+
         addControl();
-        checkConnectPage();
+
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,9 +92,17 @@ public class MainActivity extends Activity {
         });
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == MY_REQUEST_CODE){
+                // If the update is cancelled or fails,
+                // you can request to start the update again.
+            checkConnectPage();
+        }
+    }
 
-
-    private String checkConnectPage() {
+    public String checkConnectPage() {
 
 
         if(!getNetwork(this)){
@@ -145,6 +164,7 @@ public class MainActivity extends Activity {
         edtURL=findViewById(R.id.edit_URL);
         txtVersion=findViewById(R.id.txtVersion);
         txtVersion.setText("5S Messenger: "+ getVersionName(this));
+        Log.d("verison" , getVersionName(this));
     }
 
 //    public static boolean isConnected(Context context) {
@@ -224,6 +244,7 @@ public class MainActivity extends Activity {
 
     class NextMessengerPage extends AsyncTask<Void,Void,Void>
     {
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -362,5 +383,38 @@ public class MainActivity extends Activity {
 
     }
     // end add 29/05/2020
+    private class GetLastVersion extends AsyncTask<String, String, String>{
+        private String latestVersion;
+        private Context context;
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            Log.d("verison" , latestVersion);
+            if(!latestVersion.equals(getVersionName(getApplicationContext()))){
+                Intent intent = new Intent(getApplicationContext(), AppUpdate.class);
+                startActivity(intent);
+                Log.d("verison" , "inetn");
+            }else {
+                checkConnectPage();
+            }
+        }
 
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+                //It retrieves the latest version by scraping the content of current version from play store at runtime
+                latestVersion = Jsoup.connect("https://play.google.com/store/apps/details?id=" + getApplicationContext().getPackageName() + "&hl=it")
+                        .timeout(3000)
+                        .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+                        .referrer("http://www.google.com")
+                        .get()
+                        .select(".hAyfc .htlgb")
+                        .get(7)
+                        .ownText();
+                return latestVersion;
+            } catch (Exception e) {
+                return latestVersion;
+            }
+        }
+    }
 }
