@@ -68,8 +68,12 @@ public class MainActivity extends Activity {
         global.setAppContext(getApplicationContext());// lấy vị trí Activity dùng cho APP
 
         // get Version name
-        new GetLastVersion().execute();
-
+//        new GetLastVersion().execute();
+        AppUpdateChecker appUpdateChecker = new AppUpdateChecker(this);
+        appUpdateChecker.checkForUpdate(true);
+        if(appUpdateChecker.checkUpdate == true){
+            checkConnectPage();
+        }
         addControl();
 
         btnOK.setOnClickListener(new View.OnClickListener() {

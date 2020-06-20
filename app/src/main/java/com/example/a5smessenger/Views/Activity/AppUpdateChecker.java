@@ -55,33 +55,26 @@ public class AppUpdateChecker {
             //If the versions are not the same
             if(!currentVersion.equals(latestVersion)&&latestVersion!=null){
 
-//                final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-//                builder.setTitle("An Update is Available");
-//                builder.setMessage("Its better to update now");
-//                builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        //Click button action
-//                        activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id="+activity.getPackageName())));
-//                        dialog.dismiss();
-//                        System.exit(0);
-//                    }
-//                });
-//                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        //Cancel button action
-//                        System.exit(0);
-//                    }
-//                });
-//                builder.setCancelable(false);
-//                builder.show();
-//            }else {
-//                if (manualCheck) {
-//                    Toast.makeText(activity, "No Update Available", Toast.LENGTH_SHORT).show();
-//                }
+                final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setTitle("An Update is Available");
+                builder.setMessage("Its better to update now");
+                builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Click button action
+                        activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id="+activity.getPackageName())));
+                        dialog.dismiss();
+                        System.exit(0);
+                    }
+                });
+                builder.setCancelable(false);
+                builder.show();
+            }else {
+                if (manualCheck) {
+                    Toast.makeText(activity, "No Update Available", Toast.LENGTH_SHORT).show();
+                    checkUpdate = true;
+                }
             }
-//            checkUpdate = true;
         }
         @Override
         protected void onPreExecute() {
@@ -114,7 +107,6 @@ public class AppUpdateChecker {
     public void checkForUpdate(boolean manualCheck)
     {
         new GetLatestVersion(manualCheck).execute();
-
 
     }
 }
