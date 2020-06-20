@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,15 +68,11 @@ public class MainActivity extends Activity {
                                                         //nextPage=new NextMessengerPage();
         global.setAppContext(getApplicationContext());// lấy vị trí Activity dùng cho APP
 
-        // get Version name
-//        new GetLastVersion().execute();
-        AppUpdateChecker appUpdateChecker = new AppUpdateChecker(this);
-        appUpdateChecker.checkForUpdate(true);
-        if(appUpdateChecker.checkUpdate == true){
-            checkConnectPage();
-        }
+//        AppUpdateChecker appUpdateChecker = new AppUpdateChecker(this);
+//        appUpdateChecker.checkForUpdate(true);
+        new GetLastVersion().execute();
+//        checkConnectPage();
         addControl();
-
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,7 +99,7 @@ public class MainActivity extends Activity {
         if(requestCode == MY_REQUEST_CODE){
                 // If the update is cancelled or fails,
                 // you can request to start the update again.
-            checkConnectPage();
+
         }
     }
 
@@ -129,19 +126,18 @@ public class MainActivity extends Activity {
 
         final CParam cParamcheck =DatabaseHelper.getInstance().getParamByKey(global.URL_Messenger);
         Log.d("Quang",cParamcheck.getValue());
+        // get Version name
+//        new GetLastVersion().execute();
         //kiem tra link url
         boolean isConnect_URL=CheckURLConnect(this,cParamcheck.getValue());
-
         Log.d("Quang",isConnect_URL+"");
         if(isConnect_URL){
            new NextMessengerPage().execute();
         }else {
             if(getNetwork(this)){
                 //add 29/05/2020
-
                 showAlertDialog11();
                 CustomToast.makeText(this,"Kết nối không ổn định",CustomToast.LENGTH_SHORT,CustomToast.WARNING,true).show();
-
                 // end add 29/05/2020
                 //ẩn linearLayout
            //     linearLayout.setVisibility(View.VISIBLE);
@@ -397,12 +393,10 @@ public class MainActivity extends Activity {
             if(!latestVersion.equals(getVersionName(getApplicationContext()))){
                 Intent intent = new Intent(getApplicationContext(), AppUpdate.class);
                 startActivity(intent);
-                Log.d("verison" , "inetn");
             }else {
                 checkConnectPage();
             }
         }
-
         @Override
         protected String doInBackground(String... strings) {
             try {

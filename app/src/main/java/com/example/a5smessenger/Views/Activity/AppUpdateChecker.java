@@ -9,12 +9,17 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
+
+import com.example.a5smessenger.Manager.Database.DatabaseHelper;
+import com.example.a5smessenger.Manager.Model.CParam;
+import com.example.a5smessenger.Manager.Model.global;
+import com.example.a5smessenger.R;
 
 import org.jsoup.Jsoup;
 
 public class AppUpdateChecker {
-    boolean checkUpdate = false;
     private Activity activity;
     private String latestVersion;
 
@@ -34,7 +39,7 @@ public class AppUpdateChecker {
     }
     private class GetLatestVersion extends AsyncTask<String, String, String> {
         private ProgressDialog progressDialog;
-        private boolean manualCheck;
+        boolean manualCheck;
         GetLatestVersion(boolean manualCheck) {
             this.manualCheck = manualCheck;
         }
@@ -54,25 +59,25 @@ public class AppUpdateChecker {
             String currentVersion = getCurrentVersion();
             //If the versions are not the same
             if(!currentVersion.equals(latestVersion)&&latestVersion!=null){
-
-                final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setTitle("An Update is Available");
-                builder.setMessage("Its better to update now");
-                builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setTitle("Thông báo");
+                builder.setIcon(R.drawable.ic_logo_mess);
+                builder.setMessage("Đã có phiên bản mới vui lòng cập nhật !!");
+                builder.setCancelable(false);
+                builder.setNegativeButton("Cập nhật", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //Click button action
+                    public void onClick(DialogInterface dialogInterface, int i) {
                         activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id="+activity.getPackageName())));
-                        dialog.dismiss();
+//                        dialog.dismiss();
                         System.exit(0);
                     }
                 });
-                builder.setCancelable(false);
-                builder.show();
+                manualCheck=false;
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
             }else {
                 if (manualCheck) {
                     Toast.makeText(activity, "No Update Available", Toast.LENGTH_SHORT).show();
-                    checkUpdate = true;
                 }
             }
         }
@@ -109,4 +114,5 @@ public class AppUpdateChecker {
         new GetLatestVersion(manualCheck).execute();
 
     }
+
 }

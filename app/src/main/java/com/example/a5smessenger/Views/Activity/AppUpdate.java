@@ -66,12 +66,16 @@ public class AppUpdate extends Activity {
                                 && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)){
                             try {
                                 appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.FLEXIBLE, AppUpdate.this, MY_REQUEST_CODE);
+
                             } catch (IntentSender.SendIntentException e) {
                                 e.printStackTrace();
                             }
                         }
                     }
                 });
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id="+getApplicationContext().getPackageName())));
+                System.exit(0);
+
                 Log.d("verison" , "click  buton");
                 // Before starting an update, register a listener for updates.
                 appUpdateManager.registerListener(listener);
